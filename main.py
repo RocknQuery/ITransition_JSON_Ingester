@@ -69,6 +69,12 @@ class OracleDB:
                     book_year = int(book.get("year"))
                     book_price = float(book_price_raw[1:])
                     book_currency = book_price_raw[0]
+                    if book_currency.startswith('€'):
+                        book_currency = 'EUR'
+                    elif book_currency.startswith('$'):
+                        book_currency = 'USD'
+                    else:
+                        raise ValueError(f"Unknown currency: {book_currency}")
 
                     rows.append((
                         book_id,
