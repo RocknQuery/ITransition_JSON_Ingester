@@ -31,15 +31,26 @@ class Parser:
 
 class OracleDB:
     def __init__(self):
-        self.service_name = "ORACLE_DB"
-        self.user = "system"
+        service_name = "ORACLE_DB"
 
-        password = keyring.get_password(self.service_name, self.user)
+        user = keyring.get_password(service_name, "db_user")
+        if user is None:
+            user = input("Enter DB username: ")
+            keyring.set_password(service_name, "db_user", user)
+
+        password = keyring.get_password(service_name, user)
         if password is None:
             password = getpass.getpass("Enter DB password: ")
-            keyring.set_password(self.service_name, self.user, password)
+            keyring.set_password(service_name, user, password)
+
+        dsn = keyring.get_password(service_name, "db_dsn")
+        if dsn is None:
+            dsn = input("Enter DSN: ")
+            keyring.set_password(service_name, "db_dsn", dsn)
+
+        self.user = user
         self.password = password
-        self.dsn = "localhost:1521/orcl"
+        self.dsn = dsn
 
 
     def connect(self):
