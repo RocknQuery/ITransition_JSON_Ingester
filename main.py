@@ -59,7 +59,7 @@ class OracleDB:
             with conn.cursor() as cur:
                 rows = []
                 for book in validated_json:
-                    book_price_raw = book.get("price")
+                    # book_price_raw = book.get("price")
 
                     book_id = str(book.get("id"))
                     book_title = book.get("title")
@@ -67,14 +67,15 @@ class OracleDB:
                     book_genre = book.get("genre")
                     book_publisher = book.get("publisher")
                     book_year = int(book.get("year"))
-                    book_price = float(book_price_raw[1:])
-                    book_currency = book_price_raw[0]
-                    if book_currency.startswith('€'):
-                        book_currency = 'EUR'
-                    elif book_currency.startswith('$'):
-                        book_currency = 'USD'
-                    else:
-                        raise ValueError(f"Unknown currency: {book_currency}")
+                    book_price = book.get("price")
+                    # book_price = float(book_price_raw[1:])
+                    # book_currency = book_price_raw[0]
+                    # if book_currency.startswith('€'):
+                    #     book_currency = 'EUR'
+                    # elif book_currency.startswith('$'):
+                    #     book_currency = 'USD'
+                    # else:
+                    #     raise ValueError(f"Unknown currency: {book_currency}")
 
                     rows.append((
                         book_id,
@@ -83,14 +84,14 @@ class OracleDB:
                         book_genre,
                         book_publisher,
                         book_year,
-                        book_price,
-                        book_currency,
+                        book_price
+                        # ,book_currency,
                     ))
 
                 cur.executemany("""insert into tb_first_task_books
-                                              (id, title, author, genre, publisher, year, price, currency)
+                                              (id, title, author, genre, publisher, year, price)
                                             values
-                                              (:1, :2, :3, :4, :5, :6, :7, :8)""", rows)
+                                              (:1, :2, :3, :4, :5, :6, :7)""", rows)
 
                 conn.commit()
                 print(f"Records inserted: {len(validated_json)}")
