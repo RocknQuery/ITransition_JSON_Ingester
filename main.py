@@ -7,11 +7,8 @@ import json
 from pathlib import Path
 
 class Parser:
-    def __init__(self, file_path=r"C:\Users\User\Desktop\ITransition\Learning\Task_1\task1_d.json"):
+    def __init__(self, file_path):
         self.file_path = Path(file_path)
-
-        if not os.path.exists(file_path):
-            raise FileNotFoundError(f"File {file_path} does not exist")
 
 
     def get_validated_json(self) -> json:
@@ -115,7 +112,11 @@ class OracleDB:
 
 
 if __name__ == "__main__":
-    parser = Parser()
+    file_path = input("Enter file path: ")
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"File {file_path} does not exist")
+
+    parser = Parser(file_path)
     validated_json = parser.get_validated_json()
 
     db = OracleDB()
